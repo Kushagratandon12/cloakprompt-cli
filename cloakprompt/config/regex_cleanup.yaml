@@ -1,0 +1,206 @@
+# regex-clean.yaml
+# Patterns to detect and redact sensitive information before sending to LLMs
+
+patterns:
+
+  USER_CREDENTIALS:
+    description: "Regex for usernames and passwords in logs or config files"
+    rules:
+      - name: username
+        placeholder: <REDACT_USERNAME>
+        regex: '\b(user(name)?|login|uid)\s*[:=]\s*[A-Za-z0-9._-]{3,30}\b'
+      - name: password
+        placeholder: <REDACT_PASSWORD>
+        regex: '\b(pass(word)?|pwd)\s*[:=]\s*["'']?[A-Za-z0-9!@#$%^&*()_+=-]{6,50}["'']?\b'
+
+  AWS_CREDENTIALS:
+    description: "Regex for AWS keys"
+    rules:
+      - name: aws_access_key
+        placeholder: <REDACT_AWS_ACCESS_KEY>
+        regex: 'AKIA[0-9A-Z]{16}'
+      - name: aws_secret_key
+        placeholder: <REDACT_AWS_SECRET_KEY>
+        regex: '(?i)aws(.{0,20})?(secret|key)["'']?\s*[:=]\s*["'']?[A-Za-z0-9/+=]{40}["'']?'
+
+  DATABASE_CREDENTIALS:
+    description: "Regex for DB connection strings"
+    rules:
+      - name: postgres_url
+        placeholder: <REDACT_POSTGRES_URL>
+        regex: 'postgres(?:ql)?://[A-Za-z0-9._-]+:[^@]+@[A-Za-z0-9._-]+:[0-9]+/[A-Za-z0-9_-]+'
+      - name: mysql_url
+        placeholder: <REDACT_MYSQL_URL>
+        regex: 'mysql://[A-Za-z0-9._-]+:[^@]+@[A-Za-z0-9._-]+:[0-9]+/[A-Za-z0-9_-]+'
+      - name: redis_url
+        placeholder: <REDACT_REDIS_URL>
+        regex: 'redis://:?[^@]+@[A-Za-z0-9._-]+:[0-9]+(/[0-9]+)?'
+      - name: mongo_url
+        placeholder: <REDACT_MONGO_URL>
+        regex: 'mongodb(?:\+srv)?:\/\/[^:]+:[^@]+@[A-Za-z0-9._-]+:[0-9]+/[A-Za-z0-9_-]+'
+      - name: mssql_url
+        placeholder: <REDACT_MSSQL_URL>
+        regex: 'mssql://[A-Za-z0-9._-]+:[^@]+@[A-Za-z0-9._-]+:[0-9]+/[A-Za-z0-9_-]+'
+
+  API_KEYS:
+    description: "Regex for common API keys"
+    rules:
+      - name: generic_api_key
+        placeholder: <REDACT_API_KEY>
+        regex: '\b(api[_-]?key|token)\s*[:=]\s*["'']?[A-Za-z0-9_\-]{16,64}["'']?\b'
+      - name: stripe_secret
+        placeholder: <REDACT_STRIPE_SECRET>
+        regex: 'sk_(live|test)_[0-9a-zA-Z]{20,}'
+      - name: openai_key
+        placeholder: <REDACT_OPENAI_KEY>
+        regex: 'sk-[A-Za-z0-9]{20,}'
+      - name: google_api_key
+        placeholder: <REDACT_GOOGLE_API_KEY>
+        regex: 'AIza[0-9A-Za-z\\-_]{35}'
+      - name: slack_token
+        placeholder: <REDACT_SLACK_TOKEN>
+        regex: 'xox[baprs]-[0-9A-Za-z-]+'
+      - name: github_token
+        placeholder: <REDACT_GITHUB_TOKEN>
+        regex: 'gh[pousr]_[A-Za-z0-9]{36,}'
+
+  TOKENS:
+    description: "Regex for tokens (JWT, OAuth, etc.)"
+    rules:
+      - name: jwt_token
+        placeholder: <REDACT_JWT_TOKEN>
+        regex: 'eyJ[a-zA-Z0-9_-]+?\.[a-zA-Z0-9._-]+?\.[a-zA-Z0-9._-]+'
+      - name: oauth_token
+        placeholder: <REDACT_OAUTH_TOKEN>
+        regex: 'ya29\.[0-9A-Za-z\-_]+'
+      - name: personal_access_token
+        placeholder: <REDACT_PERSONAL_ACCESS_TOKEN>
+        regex: '(?i)(pat|personal[_-]?token)["'']?\s*[:=]\s*["'']?[A-Za-z0-9_\-]{16,64}'
+
+  KUBERNETES_CONFIG:
+    description: "Regex for kubeconfigs, cluster secrets, service accounts"
+    rules:
+      - name: kube_api_server
+        placeholder: <REDACT_KUBE_API_SERVER>
+        regex: 'https://[A-Za-z0-9.-]+:(6443|443)'
+      - name: kube_token
+        placeholder: <REDACT_KUBE_TOKEN>
+        regex: '\b(token|bearer)\s*[:=]\s*["'']?[A-Za-z0-9._\-]{20,}\b'
+      - name: kubeconfig_cert
+        placeholder: <REDACT_KUBECONFIG_CERT>
+        regex: 'client-certificate-data:\s*[A-Za-z0-9+/=]{100,}'
+      - name: kubeconfig_key
+        placeholder: <REDACT_KUBECONFIG_KEY>
+        regex: 'client-key-data:\s*[A-Za-z0-9+/=]{100,}'
+
+  BASE64_SECRETS:
+    description: "Generic base64-encoded secrets (often in Kubernetes YAMLs)"
+    rules:
+      - name: base64_secret
+        placeholder: <REDACT_BASE64_SECRET>
+        regex: '\b([A-Za-z0-9+/]{20,}={0,2})\b'
+
+  CI_CD_CONFIGS:
+    description: "Regex for Jenkins, GitLab CI, GitHub Actions secrets"
+    rules:
+      - name: jenkins_credentials
+        placeholder: <REDACT_JENKINS_CREDENTIALS>
+        regex: '(?i)(jenkins.*(cred|secret))["'']?\s*[:=]\s*["'']?[A-Za-z0-9!@#$%^&*()_+=-]{6,50}["'']?'
+      - name: github_actions_secret
+        placeholder: <REDACT_GITHUB_ACTIONS_SECRET>
+        regex: '\${{\s*secrets\.[A-Z0-9_]+\s*}}'
+      - name: gitlab_token
+        placeholder: <REDACT_GITLAB_TOKEN>
+        regex: 'glpat-[0-9a-zA-Z\-_]{20,}'
+
+  SSH_KEYS:
+    description: "Regex for private SSH keys"
+    rules:
+      - name: ssh_private_key
+        placeholder: <REDACT_SSH_PRIVATE_KEY>
+        regex: '-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----[\s\S]+?-----END (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----'
+
+  CLOUD_KEYS:
+    description: "Regex for Azure, GCP, and other cloud provider keys"
+    rules:
+      - name: azure_key
+        placeholder: <REDACT_AZURE_KEY>
+        regex: 'AZ[a-zA-Z0-9]{32}'
+      - name: gcp_private_key
+        placeholder: <REDACT_GCP_PRIVATE_KEY>
+        regex: '"private_key":\s*"-----BEGIN PRIVATE KEY-----[\s\S]+?-----END PRIVATE KEY-----"'
+      - name: gcp_client_email
+        placeholder: <REDACT_GCP_CLIENT_EMAIL>
+        regex: '"client_email":\s*"[a-zA-Z0-9._%+-]+@[a-z0-9-]+\.iam\.gserviceaccount\.com"'
+      - name: digitalocean_token
+        placeholder: <REDACT_DIGITALOCEAN_TOKEN>
+        regex: 'dop_v1_[a-f0-9]{64}'
+      - name: twilio_sid
+        placeholder: <REDACT_TWILIO_SID>
+        regex: 'AC[a-f0-9]{32}'
+      - name: twilio_auth
+        placeholder: <REDACT_TWILIO_AUTH>
+        regex: '[0-9a-f]{32}'
+      - name: sendgrid_api
+        placeholder: <REDACT_SENDGRID_API>
+        regex: 'SG\.[A-Za-z0-9_\-]{22}\.[A-Za-z0-9_\-]{43}'
+
+  DEVOPS_CONFIGS:
+    description: "Regex for DevOps-related configs (Docker, Terraform, Vault)"
+    rules:
+      - name: docker_auth_json
+        placeholder: <REDACT_DOCKER_AUTH_JSON>
+        regex: '"auths":\s*{[\s\S]+?"auth":\s*"[A-Za-z0-9+/=]+"'
+      - name: terraform_state_secret
+        placeholder: <REDACT_TERRAFORM_SECRET>
+        regex: '"(sensitive|secret|password)":\s*"(.*?)"'
+      - name: vault_token
+        placeholder: <REDACT_VAULT_TOKEN>
+        regex: 's\.[a-zA-Z0-9]{24}'
+
+  GENERAL_SECRETS:
+    description: "Catch-all regex for generic secrets"
+    rules:
+      - name: generic_40_char
+        placeholder: <REDACT_GENERIC_40_CHAR>
+        regex: '\b[A-Za-z0-9+/=]{40}\b'
+      - name: generic_hex_64
+        placeholder: <REDACT_GENERIC_HEX_64>
+        regex: '\b[a-f0-9]{64}\b'
+      - name: long_random_string
+        placeholder: <REDACT_LONG_RANDOM_STRING>
+        regex: '\b[A-Za-z0-9]{32,}\b'
+
+  PII:
+    description: "Regex for personally identifiable information"
+    rules:
+      - name: email
+        placeholder: <REDACT_EMAIL>
+        regex: '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+      - name: phone_number
+        placeholder: <REDACT_PHONE_NUMBER>
+        regex: '(\+?\d{1,3}[\s-]?)?(\(?\d{2,4}\)?[\s-]?)?\d{3,4}[\s-]?\d{4}'
+      - name: ipv4_address
+        placeholder: <REDACT_IPV4_ADDRESS>
+        regex: '\b(?:\d{1,3}\.){3}\d{1,3}\b'
+      - name: ipv6_address
+        placeholder: <REDACT_IPV6_ADDRESS>
+        regex: '(?:(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4})'
+      - name: credit_card
+        placeholder: <REDACT_CREDIT_CARD>
+        regex: '\b(?:\d[ -]*?){13,16}\b'
+      - name: ssn
+        placeholder: <REDACT_SSN>
+        regex: '\b\d{3}-\d{2}-\d{4}\b'
+      - name: api_domain
+        placeholder: <REDACT_INTERNAL_DOMAIN>
+        regex: '\b(?:[a-zA-Z0-9-]+\.)+(internal|corp|intra|dev|local)\b'
+      - name: address
+        placeholder: <REDACT_ADDRESS>
+        regex: '\d{1,5}\s+[A-Za-z0-9\s.,-]+(Street|St|Avenue|Ave|Boulevard|Blvd|Rd|Road|Lane|Ln|Drive|Dr)\b'
+      - name: passport
+        placeholder: <REDACT_PASSPORT>
+        regex: '\b[A-Z]{1}[0-9]{7}\b'
+      - name: aadhaar
+        placeholder: <REDACT_AADHAAR>
+        regex: '\b\d{4}\s\d{4}\s\d{4}\b'
