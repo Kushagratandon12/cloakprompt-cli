@@ -143,7 +143,7 @@ class ConfigParser:
         config = self.get_config(custom_config_path)
         patterns = []
         
-        for category, category_data in config.items():
+        for category, category_data in config.get('patterns').items():
             if isinstance(category_data, dict) and 'rules' in category_data:
                 for rule in category_data['rules']:
                     if 'regex' in rule and 'placeholder' in rule:

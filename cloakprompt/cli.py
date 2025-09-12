@@ -17,9 +17,9 @@ from rich.text import Text
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
-from .core.parser import ConfigParser
-from .core.redactor import TextRedactor
-from .utils.file_loader import InputLoader
+from core.parser import ConfigParser
+from core.redactor import TextRedactor
+from utils.file_loader import InputLoader
 
 # Initialize Typer app
 app = typer.Typer(
@@ -115,12 +115,12 @@ def redact(
             console=console,
             disable=quiet
         ) as progress:
-            progress.add_task("Initializing redactor...", total=None)
+            task_id = progress.add_task("Initializing redactor...", total=None)
             
             config_parser = ConfigParser()
             redactor = TextRedactor(config_parser)
             
-            progress.update(progress.tasks[0], description="Redactor ready")
+            progress.update(task_id, description="Redactor ready")
         
         # Show pattern summary if requested
         if summary:
@@ -144,7 +144,7 @@ def redact(
                     use_stdin=stdin
                 )
                 
-                progress.update(progress.tasks[0], description="Input loaded")
+                progress.update(task_id, description="Input loaded")
                 
         except Exception as e:
             console.print(f"[red]Error loading input: {e}[/red]")
@@ -170,7 +170,7 @@ def redact(
                     redactions = []
                     total_redactions = 0
                 
-                progress.update(progress.tasks[0], description="Redaction complete")
+                progress.update(task_id, description="Redaction complete")
                 
         except Exception as e:
             console.print(f"[red]Error during redaction: {e}[/red]")
