@@ -18,7 +18,7 @@ setup(
     name="cloakprompt",
     version="1.0.0",
     author="Kushagra Tandon",
-    author_email="team@cloakprompt.com",
+    author_email="kushagra.tandon.124@gmail.com",
     description="Secure text redaction for LLM interactions",
     long_description=long_description,
     long_description_content_type="text/markdown",

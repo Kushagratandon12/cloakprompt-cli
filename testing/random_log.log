@@ -1,0 +1,26 @@
+2025-11-08T08:10:01.123Z INFO  auth-service User login succeeded user_id=1345 ip=10.0.4.21 session_id=6a7f4e2b
+2025-11-08T08:10:03.456Z WARN  api-gateway Request header contains Authorization token=FAKE_TOKEN_x7y9z_3d2b1a
+2025-11-08T08:10:07.890Z ERROR db-connector Connection failed to db.internal:5432 user=app_user password=FAKE_DB_PASS_9q8w7e6r error="authentication failed"
+2025-11-08T08:11:12.001Z INFO  scheduler Task started name="daily-metrics" instance=worker-12 private_ip=172.16.5.9
+2025-11-08T08:11:12.002Z DEBUG metrics-exporter Sending metrics to endpoint=https://metrics.example.corp token=FAKE_METRICSTOKEN_00ABCDEF
+2025-11-08T08:12:45.333Z INFO  deploy-service Deployed revision=4f2c3b tag=v1.12.0 image=registry.internal/example-app:1.12.0
+2025-11-08T08:13:01.111Z ERROR secrets-manager Failed to read secret secret_name="/prod/db/master" reason="access denied" details="path=/secrets/prod/db master_key=FAKE_MASTERKEY_zz99yy88"
+2025-11-08T08:14:21.999Z INFO  backup Backup finished duration=00:07:12 s3_bucket=s3://backups-prod/2025-11-08 checksum=fakechecksum123
+2025-11-08T08:15:33.210Z DEBUG ldap-connector LDAP bind attempted host=ldap.internal.local:3269 dn="uid=svc-ldap,ou=svc,dc=example,dc=local" password=FAKE_LDAP_PASS_!@#$$%^^
+2025-11-08T08:16:40.420Z INFO  http-proxy Proxy request from=203.0.113.15 to=10.1.2.3 path="/api/v1/users" status=200 latency_ms=45
+2025-11-08T08:17:50.777Z WARN  mailer SMTP send failed host=smtp.internal:587 user=mailer@example.com pass=FAKE_SMTP_PASS_abc123 err="relay refused"
+2025-11-08T08:18:55.005Z INFO  cache Cache miss key="user:1345:profile" node=cache-2 internal_ip=192.168.100.5
+2025-11-08T08:20:10.010Z INFO  maintenance Started maintenance window window_id=maint-20251108 initiated_by=ops@example.com
+2025-11-08T08:21:20.999Z DEBUG aws-sync Attempting to assume role role_arn=arn:aws:iam::123456789012:role/FAKE_SYNC_ROLE session_name=syncer-2025 region=ap-south-1 temp_creds=FAKE_TEMP_CREDS_XYZ
+2025-11-08T08:22:31.321Z ERROR payment-gateway Payment failed order_id=ORD-998733 reason="card declined" card_last4=4242 token=FAKE_PAYMENT_TOKEN_7t6r5e4w
+2025-11-08T08:23:50.900Z INFO  health-check System healthy uptime=43d mem_free=4.2Gi cpu_load=0.42
+2025-11-08T08:25:12.600Z DEBUG ci Build output: mvn -DskipTests package ... env_var.CONN_STRING=postgres://app_user:FAKE_DB_PASS_9q8w7e6r@db.internal:5432/appdb
+2025-11-08T08:27:00.000Z ERROR intrusion-monitor Suspicious outbound connection ip=198.51.100.45 port=443 process=unknown details="destination appeared unusual"
+2025-11-08T08:28:10.010Z INFO  file-uploader File uploaded path="/uploads/2025/11/report.pdf" uploader=user:1345 size=2.1MB md5=fakemd5123
+2025-11-08T08:30:14.001Z DEBUG kube-proxy Pod create event pod=web-5b6d78 node=node-17 host_ip=10.2.3.11 secret_env="DB_PASS=FAKE_DB_PASS_9q8w7e6r;API_TOKEN=FAKE_TOKEN_x7y9z"
+2025-11-08T08:31:45.321Z INFO  oauth OAuth token exchange success client_id=CLIENT_FAKE_1122 token_id=FAKE_OAUTH_TOKEN_kk33ll22 refresh=FAKE_REFRESH_4444
+2025-11-08T08:33:12.654Z DEBUG telemetry Session dump base64=FAKE_B64_QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+2025-11-08T08:35:00.000Z INFO  rotation Key rotation scheduled key_name="service-account-key" old_version=1 new_version=2 operator=ops@example.com
+2025-11-08T08:40:22.102Z WARN  external-sync External API responded with 401 header="WWW-Authenticate: FakeRealm" api_key=FAKE_APIKEY_zz_topsecret_notreal
+2025-11-08T08:45:55.555Z ERROR file-processor Failed to read private key path="/etc/keys/id_rsa" key_preview="-----BEGIN RSA PRIVATE KEY-----FAKE_PRIVATE_KEY_BLOCK-----END RSA PRIVATE KEY-----"
+2025-11-08T08:47:11.777Z INFO  app-start Application started v=2.0.0 commit=fakecommitsha0001

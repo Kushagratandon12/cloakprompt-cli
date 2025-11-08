@@ -5,21 +5,19 @@ CLI entry point for cloakprompt.
 A command-line tool for redacting sensitive information from text before sending to LLMs.
 """
 
-import sys
 import logging
-from pathlib import Path
+import os
 from typing import Optional
 
 import typer
 from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
-from core.parser import ConfigParser
-from core.redactor import TextRedactor
-from utils.file_loader import InputLoader
+from cloakprompt.core.parser import ConfigParser
+from cloakprompt.utils.utils import setup_logging, print_banner, print_summary
+from cloakprompt.core.redactor import TextRedactor
+from cloakprompt.utils.file_loader import InputLoader
 
 # Initialize Typer app
 app = typer.Typer(
@@ -30,55 +28,12 @@ app = typer.Typer(
 
 # Initialize Rich console
 console = Console()
-
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-
-def setup_logging(verbose: bool = False, quiet: bool = False):
-    """Configure logging based on verbosity flags."""
-    if quiet:
-        logging.getLogger().setLevel(logging.ERROR)
-    elif verbose:
-        logging.getLogger().setLevel(logging.DEBUG)
-    else:
-        logging.getLogger().setLevel(logging.INFO)
-
-
-def print_banner():
-    """Print the application banner."""
-    banner_text = Text("🔒 CLOAKPROMPT", style="bold blue")
-    subtitle = Text("Secure text redaction for LLM interactions", style="dim")
-    
-    console.print(Panel(
-        f"{banner_text}\n{subtitle}",
-        border_style="blue",
-        padding=(1, 2)
-    ))
-
-
-def print_summary(redactor: TextRedactor, custom_config: Optional[str] = None):
-    """Print a summary of available redaction patterns."""
-    try:
-        summary = redactor.get_pattern_summary(custom_config)
-        
-        table = Table(title="Redaction Patterns Summary", show_header=True, header_style="bold magenta")
-        table.add_column("Category", style="cyan", no_wrap=True)
-        table.add_column("Pattern Count", justify="right", style="green")
-        
-        for category, count in summary['categories'].items():
-            table.add_row(category, str(count))
-        
-        console.print(table)
-        console.print(f"\nTotal patterns: {summary['total_patterns']}")
-        
-    except Exception as e:
-        console.print(f"[yellow]Warning: Could not load pattern summary: {e}[/yellow]")
-
 
 @app.command()
 def redact(
@@ -106,7 +61,7 @@ def redact(
         
         # Print banner (unless quiet mode)
         if not quiet:
-            print_banner()
+            print_banner(console)
         
         # Initialize components
         with Progress(
@@ -125,7 +80,7 @@ def redact(
         # Show pattern summary if requested
         if summary:
             if not quiet:
-                print_summary(redactor, config)
+                print_summary(console, redactor, config)
             return
         
         # Load input
@@ -165,6 +120,10 @@ def redact(
                     redacted_text = result['redacted_text']
                     redactions = result['redactions']
                     total_redactions = result['total_redactions']
+                    if file is not None:
+                        file_name, file_extension = os.path.splitext(file)
+                        with open(f"{file_name}_redacted{file_extension}", 'w', encoding='utf-8') as file:
+                            file.write(redacted_text)
                 else:
                     redacted_text = redactor.redact_text(input_text, config)
                     redactions = []
@@ -184,8 +143,11 @@ def redact(
                 console.print("[yellow]ℹ No sensitive information found[/yellow]")
         
         # Print redacted text to stdout
-        logger.info(f"Redacted {redacted_text} sensitive items from text")
-        print(redacted_text)
+        if not quiet and not file:
+            logger.info(f"Redacted {redacted_text} sensitive items from text")
+            print(redacted_text)
+        else:
+            print(f'Redacted completed successfully check directory {os.path.dirname(file_name)}.')
         
         # Show detailed information if requested
         if details and redactions and not quiet:
@@ -224,12 +186,12 @@ def patterns(
     """Show available redaction patterns."""
     try:
         setup_logging(verbose)
-        print_banner()
+        print_banner(console)
         
         config_parser = ConfigParser()
         redactor = TextRedactor(config_parser)
         
-        print_summary(redactor, config)
+        print_summary(console, redactor, config)
         
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
