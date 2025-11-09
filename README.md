@@ -246,6 +246,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Issues**: [GitHub Issues](https://github.com/Kushagratandon12/cloakprompt-cli/issues)
 - **Documentation**: [GitHub README](https://github.com/Kushagratandon12/cloakprompt-cli#readme)
 
+**Created by [Kushagra Tandon](https://github.com/KushagraTandon124)**
+
+LLM Security | Prompt Redaction | AI Tools Developer
+
 ## 🔒 Security
 
 - All processing happens locally - no data is sent to external services
