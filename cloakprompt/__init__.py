@@ -4,7 +4,17 @@ CloakPrompt - Secure text redaction for LLM interactions.
 A command-line tool for redacting sensitive information from text before sending to LLMs.
 """
 
-__version__ = "1.0.0"
+try:
+    from importlib.metadata import version, PackageNotFoundError
+except ImportError:
+    # Python < 3.8
+    from importlib_metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("cloakprompt")
+except PackageNotFoundError:
+    __version__ = "0.1.2"  # Fallback version
+
 __author__ = "Kushagra Tandon"
 __description__ = "Secure text redaction for LLM interactions"
 

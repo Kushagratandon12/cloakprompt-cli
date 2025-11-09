@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cloakprompt"
-version = "v0.1.0"
+version = "0.1.2"
 description = "Secure text redaction for LLM interactions"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -61,7 +61,7 @@ Repository = "https://github.com/Kushagratandon12/cloakprompt-cli"
 cloakprompt = "cloakprompt.cli:main"
 
 [tool.setuptools]
-packages = ["cloakprompt"]
+packages = {find = {}}
 
 [tool.setuptools.package-data]
 cloakprompt = ["config/*.yaml"]

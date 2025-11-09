@@ -18,6 +18,7 @@ from cloakprompt.core.parser import ConfigParser
 from cloakprompt.utils.utils import setup_logging, print_banner, print_summary
 from cloakprompt.core.redactor import TextRedactor
 from cloakprompt.utils.file_loader import InputLoader
+from cloakprompt import __version__
 
 # Initialize Typer app
 app = typer.Typer(
@@ -201,7 +202,7 @@ def patterns(
 @app.command()
 def version():
     """Show version information."""
-    console.print("🔒 CloakPrompt v1.0.0")
+    console.print(f"🔒 CloakPrompt v{__version__}")
     console.print("Secure text redaction for LLM interactions")
 
 
